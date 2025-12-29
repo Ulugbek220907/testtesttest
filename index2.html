@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telegram Contact Form</title>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; padding: 50px; background: #f4f4f9; }
+        .card { background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
+        input, textarea { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
+        button { width: 100%; padding: 10px; background: #0088cc; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        button:hover { background: #0077b5; }
+        #status { margin-top: 15px; text-align: center; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>Send a Message</h2>
+    <form id="tgForm">
+        <input type="text" id="name" placeholder="Your Name" required>
+        <textarea id="message" rows="4" placeholder="Your Message..." required></textarea>
+        <button type="submit" id="submitBtn">Send to Telegram</button>
+    </form>
+    <div id="status"></div>
+</div>
+
+<script>
+    const BOT_TOKEN = "8234594479:AAEWuCMMn5kYh1eodb4SX2_e7EJMZOP-BTk"; // Replace with your fresh token later
+    const CHAT_ID = "7938793919";
+
+    document.getElementById('tgForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('submitBtn');
+        const status = document.getElementById('status');
+        const name = document.getElementById('name').value;
+        const msg = document.getElementById('message').value;
+
+        btn.disabled = true;
+        status.innerText = "Sending...";
+
+        const fullMessage = `<b>New Website Message</b>%0A<b>From:</b> ${name}%0A<b>Message:</b> ${msg}`;
+        const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${fullMessage}&parse_mode=html`;
+
+        try {
+            const response = await fetch(url);
+            if (response.ok) {
+                status.style.color = "green";
+                status.innerText = "✅ Message sent successfully!";
+                document.getElementById('tgForm').reset();
+            } else {
+                throw new Error();
+            }
+        } catch (err) {
+            status.style.color = "red";
+            status.innerText = "❌ Error sending message.";
+        } finally {
+            btn.disabled = false;
+        }
+    });
+</script>
+
+</body>
+</html>
